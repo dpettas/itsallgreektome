@@ -1,4 +1,4 @@
-const recipes = [
+window.recipes = [
   {
     title: "Spanakopita",
     category: "Savory Pie",

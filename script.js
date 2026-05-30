@@ -2,6 +2,7 @@ const grid = document.querySelector("#recipe-grid");
 const searchInput = document.querySelector("#recipe-search");
 const tagBar = document.querySelector("#tag-bar");
 const resultCount = document.querySelector("#result-count");
+const recipes = Array.isArray(window.recipes) ? window.recipes : [];
 
 let activeTag = "all";
 
@@ -90,5 +91,15 @@ tagBar.addEventListener("click", (event) => {
 
 searchInput.addEventListener("input", renderRecipes);
 
-renderTags();
-renderRecipes();
+if (recipes.length) {
+  renderTags();
+  renderRecipes();
+} else {
+  tagBar.innerHTML = "";
+  resultCount.textContent = "";
+  grid.innerHTML = `
+    <div class="empty-state">
+      Recipes could not load. Refresh the page or check that recipes.js is available.
+    </div>
+  `;
+}
