@@ -1,19 +1,17 @@
 # ItsAllGreekToMe
 
-A collection of mostly Greek recipes.
+A static food blog for mostly Greek recipes.
 
-## Recipe Index
+## Local Preview
 
-- [Recipes](recipes/)
+Open `index.html` in a browser.
 
-## Suggested Recipe Format
+## GitHub Pages
 
-Each recipe can include:
+The site is designed to run on GitHub Pages from the repository root.
 
-- Ingredients
-- Instructions
-- Prep time
-- Cook time
-- Servings
-- Notes or variations
+Expected URL:
 
+```text
+https://dpettas.github.io/ItsAllGreekToMe/
+```
