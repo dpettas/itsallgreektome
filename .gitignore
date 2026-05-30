@@ -1,0 +1,9 @@
+# OS/editor files
+.DS_Store
+Thumbs.db
+*.swp
+.codex
+
+# Local environment files
+.env
+.env.local
