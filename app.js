@@ -1,5 +1,7 @@
 const { createElement: h, useEffect, useMemo, useState } = React;
-const recipes = Array.isArray(window.recipes) ? window.recipes : [];
+const baseRecipes = Array.isArray(window.recipes) ? window.recipes : [];
+const defaultRecipeImage =
+  "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=900&q=80";
 
 function getStoredFavorites() {
   try {
@@ -9,13 +11,53 @@ function getStoredFavorites() {
   }
 }
 
+function getStoredRecipes() {
+  try {
+    return JSON.parse(localStorage.getItem("createdRecipes") || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function slugify(value) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function splitLines(value) {
+  return value
+    .split("\n")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function splitTags(value) {
+  return value
+    .split(",")
+    .map((item) => item.trim().toLowerCase())
+    .filter(Boolean);
+}
+
 function App() {
   const page = document.querySelector("#app").dataset.page;
   const [favorites, setFavorites] = useState(getStoredFavorites);
+  const [createdRecipes, setCreatedRecipes] = useState(getStoredRecipes);
+  const recipes = useMemo(() => [...createdRecipes, ...baseRecipes], [createdRecipes]);
 
   useEffect(() => {
     localStorage.setItem("favoriteRecipes", JSON.stringify(favorites));
   }, [favorites]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("createdRecipes", JSON.stringify(createdRecipes));
+    } catch {
+      window.alert("That image is too large to save in this browser. Try a smaller image.");
+    }
+  }, [createdRecipes]);
 
   function toggleFavorite(slug) {
     setFavorites((current) =>
@@ -25,11 +67,15 @@ function App() {
     );
   }
 
-  if (page === "recipe") {
-    return h(RecipePage, { favorites, toggleFavorite });
+  function createRecipe(recipe) {
+    setCreatedRecipes((current) => [recipe, ...current]);
   }
 
-  return h(HomePage, { favorites, toggleFavorite });
+  if (page === "recipe") {
+    return h(RecipePage, { favorites, recipes, toggleFavorite });
+  }
+
+  return h(HomePage, { createRecipe, favorites, recipes, toggleFavorite });
 }
 
 function Nav({ compact = false }) {
@@ -42,14 +88,15 @@ function Nav({ compact = false }) {
   );
 }
 
-function HomePage({ favorites, toggleFavorite }) {
+function HomePage({ createRecipe, favorites, recipes, toggleFavorite }) {
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState("all");
   const [showFavorites, setShowFavorites] = useState(false);
+  const [isCreatorOpen, setIsCreatorOpen] = useState(false);
 
   const allTags = useMemo(
     () => ["all", ...Array.from(new Set(recipes.flatMap((recipe) => recipe.tags))).sort()],
-    [],
+    [recipes],
   );
 
   const filteredRecipes = useMemo(() => {
@@ -76,7 +123,7 @@ function HomePage({ favorites, toggleFavorite }) {
 
       return matchesSearch && matchesTag && matchesFavorite;
     });
-  }, [activeTag, favorites, query, showFavorites]);
+  }, [activeTag, favorites, query, recipes, showFavorites]);
 
   return h(
     React.Fragment,
@@ -94,7 +141,12 @@ function HomePage({ favorites, toggleFavorite }) {
           h("p", { className: "eyebrow" }, "Greek recipes, family-table energy"),
           h("h1", null, "Mostly Greek food for everyday cooking."),
           h("p", null, "Search traditional favorites, filter by tags, and save ideas for the next meal."),
-          h("a", { className: "hero-link", href: "#recipes" }, "Browse recipes"),
+          h(
+            "div",
+            { className: "hero-actions" },
+            h("a", { className: "hero-link", href: "#recipes" }, "Browse recipes"),
+            h("button", { className: "hero-button", type: "button", onClick: () => setIsCreatorOpen(true) }, "Create recipe"),
+          ),
         ),
       ),
     ),
@@ -130,6 +182,7 @@ function HomePage({ favorites, toggleFavorite }) {
         h(
           "div",
           { className: "interactive-row" },
+          h("button", { className: "create-button", type: "button", onClick: () => setIsCreatorOpen(true) }, "Create recipe"),
           h(
             "label",
             { className: "toggle-control" },
@@ -165,6 +218,19 @@ function HomePage({ favorites, toggleFavorite }) {
         ),
       ),
     ),
+    isCreatorOpen &&
+      h(RecipeCreator, {
+        onClose: () => setIsCreatorOpen(false),
+        onCreate: (recipe) => {
+          createRecipe(recipe);
+          setIsCreatorOpen(false);
+          setQuery("");
+          setActiveTag("all");
+          setShowFavorites(false);
+          window.location.hash = "recipes";
+        },
+        recipes,
+      }),
     h(Footer),
   );
 }
@@ -193,7 +259,182 @@ function RecipeCard({ recipe, favorites, toggleFavorite }) {
   );
 }
 
-function RecipePage({ favorites, toggleFavorite }) {
+function RecipeCreator({ onClose, onCreate, recipes }) {
+  const [form, setForm] = useState({
+    title: "",
+    category: "Family Recipe",
+    prepTime: "15 minutes",
+    cookTime: "30 minutes",
+    servings: "4 servings",
+    description: "",
+    tags: "greek, homemade",
+    ingredients: "",
+    instructions: "",
+    story: "",
+    details: "",
+    image: "",
+  });
+
+  function updateField(field, value) {
+    setForm((current) => ({ ...current, [field]: value }));
+  }
+
+  function handleImageUpload(event) {
+    const file = event.target.files && event.target.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const image = new Image();
+      image.onload = () => {
+        const maxSize = 1200;
+        const ratio = Math.min(1, maxSize / Math.max(image.width, image.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(image.width * ratio);
+        canvas.height = Math.round(image.height * ratio);
+        const context = canvas.getContext("2d");
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        updateField("image", canvas.toDataURL("image/jpeg", 0.82));
+      };
+      image.onerror = () => updateField("image", reader.result);
+      image.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    const title = form.title.trim();
+    const slugBase = slugify(title || "new-recipe");
+    const existingSlugs = new Set(recipes.map((recipe) => recipe.slug));
+    let slug = slugBase;
+    let suffix = 2;
+
+    while (existingSlugs.has(slug)) {
+      slug = `${slugBase}-${suffix}`;
+      suffix += 1;
+    }
+
+    const ingredientsList = splitLines(form.ingredients);
+    const instructions = splitLines(form.instructions);
+    const tags = splitTags(form.tags);
+    const prepTime = form.prepTime.trim();
+    const cookTime = form.cookTime.trim();
+
+    onCreate({
+      title,
+      slug,
+      category: form.category.trim() || "Recipe",
+      time: cookTime || prepTime || "New",
+      published: new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+      prepTime: prepTime || "Not set",
+      cookTime: cookTime || "Not set",
+      totalTime: [prepTime, cookTime].filter(Boolean).join(" + ") || "Not set",
+      servings: form.servings.trim() || "Not set",
+      description: form.description.trim() || "A homemade Greek recipe.",
+      tags: tags.length ? tags : ["homemade"],
+      ingredients: ingredientsList.slice(0, 5),
+      ingredientsList: ingredientsList.length ? ingredientsList : ["Add ingredients"],
+      instructions: instructions.length ? instructions : ["Add instructions"],
+      story: splitLines(form.story).length
+        ? splitLines(form.story)
+        : [form.description.trim() || "A new recipe from the kitchen."],
+      detailsTitle: "Recipe notes",
+      details: splitLines(form.details).length
+        ? splitLines(form.details)
+        : ["Adjust seasoning to taste.", "Serve warm or at room temperature."],
+      image: form.image || defaultRecipeImage,
+    });
+  }
+
+  return h(
+    "div",
+    { className: "modal-backdrop", role: "presentation" },
+    h(
+      "section",
+      { className: "recipe-modal", role: "dialog", "aria-modal": "true", "aria-labelledby": "create-recipe-title" },
+      h(
+        "div",
+        { className: "modal-heading" },
+        h("div", null, h("p", { className: "section-kicker" }, "New Recipe"), h("h2", { id: "create-recipe-title" }, "Create recipe")),
+        h("button", { className: "icon-close", type: "button", onClick: onClose, "aria-label": "Close" }, "x"),
+      ),
+      h(
+        "form",
+        { className: "recipe-form", onSubmit: handleSubmit },
+        h(
+          "div",
+          { className: "form-grid" },
+          h(FormField, { label: "Title", value: form.title, required: true, onChange: (value) => updateField("title", value) }),
+          h(FormField, { label: "Category", value: form.category, onChange: (value) => updateField("category", value) }),
+          h(FormField, { label: "Prep time", value: form.prepTime, onChange: (value) => updateField("prepTime", value) }),
+          h(FormField, { label: "Cook time", value: form.cookTime, onChange: (value) => updateField("cookTime", value) }),
+          h(FormField, { label: "Servings", value: form.servings, onChange: (value) => updateField("servings", value) }),
+          h(FormField, { label: "Tags", value: form.tags, onChange: (value) => updateField("tags", value) }),
+        ),
+        h(FormField, { label: "Description", value: form.description, required: true, onChange: (value) => updateField("description", value) }),
+        h(
+          "div",
+          { className: "image-picker" },
+          h(
+            "label",
+            null,
+            h("span", null, "Thumbnail image"),
+            h("input", { type: "file", accept: "image/*", onChange: handleImageUpload }),
+          ),
+          h("img", { src: form.image || defaultRecipeImage, alt: "Recipe thumbnail preview" }),
+        ),
+        h(TextAreaField, { label: "Ingredients", value: form.ingredients, required: true, onChange: (value) => updateField("ingredients", value) }),
+        h(TextAreaField, { label: "Instructions", value: form.instructions, required: true, onChange: (value) => updateField("instructions", value) }),
+        h(TextAreaField, { label: "Story", value: form.story, onChange: (value) => updateField("story", value) }),
+        h(TextAreaField, { label: "Notes", value: form.details, onChange: (value) => updateField("details", value) }),
+        h(
+          "div",
+          { className: "modal-actions" },
+          h("button", { className: "clear-button", type: "button", onClick: onClose }, "Cancel"),
+          h("button", { className: "create-button", type: "submit" }, "Add recipe"),
+        ),
+      ),
+    ),
+  );
+}
+
+function FormField({ label, onChange, required = false, value }) {
+  return h(
+    "label",
+    { className: "form-field" },
+    h("span", null, label),
+    h("input", {
+      required,
+      value,
+      onChange: (event) => onChange(event.target.value),
+    }),
+  );
+}
+
+function TextAreaField({ label, onChange, required = false, value }) {
+  return h(
+    "label",
+    { className: "form-field" },
+    h("span", null, label),
+    h("textarea", {
+      required,
+      rows: 4,
+      value,
+      onChange: (event) => onChange(event.target.value),
+    }),
+  );
+}
+
+function RecipePage({ favorites, recipes, toggleFavorite }) {
   const params = new URLSearchParams(window.location.search);
   const slug = params.get("recipe");
   const recipe = recipes.find((item) => item.slug === slug);

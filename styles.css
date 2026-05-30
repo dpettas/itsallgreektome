@@ -119,6 +119,19 @@ a {
   font-weight: 800;
 }
 
+.hero-button {
+  min-height: 50px;
+  margin-top: 32px;
+  border: 2px solid rgba(255, 253, 248, 0.88);
+  border-radius: 6px;
+  background: #fffdf8;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 900;
+  padding: 0 18px;
+}
+
 .page-header {
   background: #2f3f2c;
   color: #fffdf8;
@@ -238,6 +251,7 @@ main {
 }
 
 .clear-button,
+.create-button,
 .favorite-button,
 .cook-controls button {
   min-height: 38px;
@@ -250,6 +264,12 @@ main {
   font-size: 0.9rem;
   font-weight: 900;
   padding: 0 12px;
+}
+
+.create-button {
+  border-color: var(--sea);
+  background: var(--sea);
+  color: white;
 }
 
 .favorite-button[aria-pressed="true"],
@@ -666,6 +686,132 @@ main {
   padding: 80px 0;
 }
 
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: rgba(36, 31, 26, 0.48);
+  padding: 20px;
+}
+
+.recipe-modal {
+  width: min(920px, 100%);
+  max-height: min(88vh, 980px);
+  overflow: auto;
+  border-radius: 8px;
+  background: var(--paper);
+  box-shadow: 0 30px 90px rgba(20, 16, 10, 0.34);
+  padding: clamp(20px, 4vw, 34px);
+}
+
+.modal-heading,
+.modal-actions {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.modal-heading h2 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.icon-close {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 900;
+}
+
+.recipe-form {
+  display: grid;
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.form-field {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  padding: 11px 12px;
+  outline: none;
+}
+
+.form-field textarea {
+  resize: vertical;
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  border-color: var(--sea);
+  box-shadow: 0 0 0 4px rgba(47, 111, 115, 0.14);
+}
+
+.image-picker {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 132px;
+  gap: 16px;
+  align-items: end;
+}
+
+.image-picker label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
+.image-picker input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  padding: 11px 12px;
+}
+
+.image-picker img {
+  width: 132px;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 12px 28px rgba(46, 35, 20, 0.14);
+}
+
+.modal-actions {
+  justify-content: end;
+}
+
 .empty-state {
   grid-column: 1 / -1;
   padding: 40px;
@@ -722,6 +868,15 @@ main {
 
   .recipe-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .form-grid,
+  .image-picker {
+    grid-template-columns: 1fr;
+  }
+
+  .image-picker img {
+    width: min(180px, 100%);
   }
 }
 

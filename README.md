@@ -12,6 +12,10 @@ The site uses React from a CDN and does not need a build step.
 
 Add a new recipe object to `recipes.js`.
 
+You can also use the site UI's `Create recipe` button. Recipes created from
+the UI, including uploaded thumbnails, are saved in that browser with
+`localStorage`.
+
 Use this format:
 
 ```js
