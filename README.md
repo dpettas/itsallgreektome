@@ -13,5 +13,5 @@ The site is designed to run on GitHub Pages from the repository root.
 Expected URL:
 
 ```text
-https://dpettas.github.io/ItsAllGreekToMe/
+https://dpettas.github.io/itsallgreektome/
 ```
