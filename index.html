@@ -12,67 +12,11 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header class="site-header">
-      <nav class="nav" aria-label="Main navigation">
-        <a class="brand" href="#top">ItsAllGreekToMe</a>
-        <a href="#recipes">Recipes</a>
-        <a href="#about">About</a>
-      </nav>
-
-      <section class="hero" id="top">
-        <div class="hero-content">
-          <p class="eyebrow">Greek recipes, family-table energy</p>
-          <h1>Mostly Greek food for everyday cooking.</h1>
-          <p>
-            Search traditional favorites, filter by tags, and save ideas for
-            the next meal.
-          </p>
-          <a class="hero-link" href="#recipes">Browse recipes</a>
-        </div>
-      </section>
-    </header>
-
-    <main>
-      <section class="intro" id="about" aria-labelledby="about-title">
-        <div>
-          <p class="section-kicker">Food Blog</p>
-          <h2 id="about-title">Simple recipes with Greek flavor.</h2>
-        </div>
-        <p>
-          A growing recipe notebook for dips, pies, grilled dishes, stews,
-          sweets, and weeknight plates inspired by Greek kitchens.
-        </p>
-      </section>
-
-      <section class="recipe-section" id="recipes" aria-labelledby="recipes-title">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">Recipe Index</p>
-            <h2 id="recipes-title">Find something to cook</h2>
-          </div>
-          <label class="search-label">
-            <span>Search recipes</span>
-            <input
-              id="recipe-search"
-              type="search"
-              placeholder="Search by name, ingredient, or tag"
-              autocomplete="off"
-            />
-          </label>
-        </div>
-
-        <div class="tag-bar" id="tag-bar" aria-label="Filter recipes by tag"></div>
-        <div class="result-count" id="result-count" aria-live="polite"></div>
-        <div class="recipe-grid" id="recipe-grid"></div>
-      </section>
-    </main>
-
-    <footer class="footer">
-      <p>ItsAllGreekToMe</p>
-      <p>Built as a static GitHub Pages recipe blog.</p>
-    </footer>
-
+    <div id="app" data-page="home"></div>
+    <noscript>This recipe blog needs JavaScript enabled.</noscript>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="recipes.js"></script>
-    <script src="script.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>

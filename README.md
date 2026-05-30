@@ -6,6 +6,8 @@ A static food blog for mostly Greek recipes.
 
 Open `index.html` in a browser.
 
+The site uses React from a CDN and does not need a build step.
+
 ## Add Recipes
 
 Add a new recipe object to `recipes.js`.

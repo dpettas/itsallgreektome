@@ -216,6 +216,49 @@ main {
   color: white;
 }
 
+.interactive-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.toggle-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.toggle-control input,
+.check-list input {
+  accent-color: var(--sea);
+}
+
+.clear-button,
+.favorite-button,
+.cook-controls button {
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 900;
+  padding: 0 12px;
+}
+
+.favorite-button[aria-pressed="true"],
+.cook-controls button.active-scale {
+  border-color: var(--tomato);
+  background: var(--tomato);
+  color: white;
+}
+
 .result-count {
   min-height: 24px;
   margin-top: 18px;
@@ -304,6 +347,18 @@ main {
   text-decoration: none;
 }
 
+.card-actions,
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-actions .favorite-button {
+  margin-top: 18px;
+}
+
 .recipe-page {
   padding: 44px 0 72px;
 }
@@ -343,6 +398,10 @@ main {
   margin-top: 22px;
   color: var(--sea);
   font-weight: 900;
+}
+
+.hero-actions .favorite-button {
+  margin-top: 22px;
 }
 
 .recipe-post-hero img {
@@ -401,6 +460,21 @@ main {
   gap: 24px;
 }
 
+.cook-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.cook-controls span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
 .recipe-stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -447,6 +521,25 @@ main {
   margin: 0;
   padding-left: 22px;
   color: var(--muted);
+}
+
+.check-list {
+  list-style-position: outside;
+}
+
+.check-list label {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.check-list input {
+  margin-top: 4px;
+}
+
+.check-list .checked span {
+  color: #92877c;
+  text-decoration: line-through;
 }
 
 .ingredient-list li + li,
