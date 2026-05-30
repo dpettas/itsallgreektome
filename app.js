@@ -192,31 +192,40 @@ function HomePage({ createRecipe, favorites, recipes, toggleFavorite }) {
         ),
         h(
           "div",
-          { className: "interactive-row" },
-          h("button", { className: "create-button", type: "button", onClick: () => setIsCreatorOpen(true) }, "Create recipe"),
+          { className: "recipe-controls" },
           h(
-            "label",
-            { className: "toggle-control" },
-            h("input", {
-              type: "checkbox",
-              checked: showFavorites,
-              onChange: (event) => setShowFavorites(event.target.checked),
-            }),
-            h("span", null, "Favorites only"),
+            "div",
+            { className: "interactive-row" },
+            h("button", { className: "create-button", type: "button", onClick: () => setIsCreatorOpen(true) }, "Create recipe"),
+            h(
+              "label",
+              { className: "toggle-control" },
+              h("input", {
+                type: "checkbox",
+                checked: showFavorites,
+                onChange: (event) => setShowFavorites(event.target.checked),
+              }),
+              h("span", null, "Favorites only"),
+            ),
+            h("button", { className: "clear-button", type: "button", onClick: () => { setQuery(""); setActiveTag("all"); setShowFavorites(false); } }, "Clear filters"),
           ),
-          h("button", { className: "clear-button", type: "button", onClick: () => { setQuery(""); setActiveTag("all"); setShowFavorites(false); } }, "Clear filters"),
-        ),
-        h(
-          "div",
-          { className: "tag-bar", "aria-label": "Filter recipes by tag" },
-          allTags.map((tag) =>
-            h("button", {
-              key: tag,
-              className: "tag-button",
-              type: "button",
-              "aria-pressed": tag === activeTag,
-              onClick: () => setActiveTag(tag),
-            }, tag === "all" ? "All recipes" : tag),
+          h(
+            "div",
+            { className: "tag-shell" },
+            h("p", null, "Categories"),
+            h(
+              "div",
+              { className: "tag-bar", "aria-label": "Filter recipes by tag" },
+              allTags.map((tag) =>
+                h("button", {
+                  key: tag,
+                  className: "tag-button",
+                  type: "button",
+                  "aria-pressed": tag === activeTag,
+                  onClick: () => setActiveTag(tag),
+                }, tag === "all" ? "All recipes" : tag),
+              ),
+            ),
           ),
         ),
         h("div", { className: "result-count", "aria-live": "polite" }, `${filteredRecipes.length} recipe${filteredRecipes.length === 1 ? "" : "s"} found`),

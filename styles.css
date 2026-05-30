@@ -217,6 +217,10 @@ main {
   margin-top: 28px;
 }
 
+.tag-shell p {
+  display: none;
+}
+
 .tag-button {
   min-height: 38px;
   border: 1px solid var(--line);
@@ -1025,15 +1029,73 @@ main {
     justify-content: center;
   }
 
+  .recipe-controls {
+    margin-top: 20px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 12px 30px rgba(46, 35, 20, 0.08);
+    padding: 12px;
+  }
+
+  .interactive-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+    margin-top: 0;
+  }
+
+  .interactive-row .create-button,
+  .interactive-row .clear-button {
+    width: 100%;
+    margin: 0;
+    border-radius: 8px;
+  }
+
+  .toggle-control {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+    min-height: 46px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    padding: 0 12px;
+  }
+
+  .toggle-control input {
+    width: 18px;
+    height: 18px;
+    order: 2;
+  }
+
+  .tag-shell {
+    margin-top: 14px;
+  }
+
+  .tag-shell p {
+    display: block;
+    margin: 0 0 8px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
   .tag-bar {
     flex-wrap: nowrap;
     overflow-x: auto;
-    padding-bottom: 6px;
+    gap: 8px;
+    margin-top: 0;
+    padding: 2px 2px 8px;
     scrollbar-width: thin;
   }
 
   .tag-button {
     flex: 0 0 auto;
+    min-height: 42px;
+    border-radius: 8px;
+    background: #fffdf8;
+    box-shadow: 0 5px 14px rgba(46, 35, 20, 0.06);
   }
 
   .recipe-grid {
