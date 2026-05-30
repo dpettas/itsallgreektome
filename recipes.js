@@ -7,8 +7,7 @@ window.recipes = [
       "Flaky phyllo layered with spinach, feta, scallions, dill, and olive oil.",
     tags: ["vegetarian", "phyllo", "feta", "classic"],
     ingredients: ["spinach", "feta", "dill", "phyllo"],
-    image:
-      "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=900&q=80",
+    image: "images/spanakopita.jpg",
   },
   {
     title: "Chicken Souvlaki",
@@ -18,8 +17,7 @@ window.recipes = [
       "Lemon-oregano chicken skewers with warm pita, tomato, onion, and tzatziki.",
     tags: ["grill", "weeknight", "pita", "lemon"],
     ingredients: ["chicken", "oregano", "lemon", "pita"],
-    image:
-      "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=900&q=80",
+    image: "images/chicken-souvlaki.jpg",
   },
   {
     title: "Tzatziki",
@@ -29,8 +27,7 @@ window.recipes = [
       "Thick Greek yogurt with cucumber, garlic, dill, lemon, and a good olive oil finish.",
     tags: ["dip", "yogurt", "vegetarian", "quick"],
     ingredients: ["yogurt", "cucumber", "garlic", "dill"],
-    image:
-      "https://images.unsplash.com/photo-1574484284002-952d92456975?auto=format&fit=crop&w=900&q=80",
+    image: "images/tzatziki.jpg",
   },
   {
     title: "Gemista",
@@ -40,8 +37,7 @@ window.recipes = [
       "Tomatoes and peppers stuffed with herbed rice, vegetables, and olive oil.",
     tags: ["vegetarian", "rice", "baked", "summer"],
     ingredients: ["tomatoes", "peppers", "rice", "parsley"],
-    image:
-      "https://images.unsplash.com/photo-1541014741259-de529411b96a?auto=format&fit=crop&w=900&q=80",
+    image: "images/gemista.jpg",
   },
   {
     title: "Moussaka",
@@ -51,8 +47,7 @@ window.recipes = [
       "Layered eggplant, spiced meat sauce, potatoes, and creamy bechamel.",
     tags: ["baked", "classic", "eggplant", "dinner"],
     ingredients: ["eggplant", "potato", "beef", "bechamel"],
-    image:
-      "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=900&q=80",
+    image: "images/moussaka.jpg",
   },
   {
     title: "Greek Village Salad",
@@ -62,8 +57,7 @@ window.recipes = [
       "Tomatoes, cucumber, onion, olives, feta, oregano, and olive oil.",
     tags: ["salad", "vegetarian", "quick", "feta"],
     ingredients: ["tomatoes", "cucumber", "olives", "feta"],
-    image:
-      "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?auto=format&fit=crop&w=900&q=80",
+    image: "images/greek-village-salad.jpg",
   },
 ];
 

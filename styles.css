@@ -38,8 +38,7 @@ a {
   min-height: 92vh;
   background:
     linear-gradient(90deg, rgba(26, 22, 17, 0.82), rgba(26, 22, 17, 0.28)),
-    url("https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=1800&q=80")
-      center / cover;
+    url("images/greek-table.jpg") center / cover;
   color: #fffdf8;
 }
 

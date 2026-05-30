@@ -1,7 +1,6 @@
 const { createElement: h, useEffect, useMemo, useState } = React;
 const baseRecipes = Array.isArray(window.recipes) ? window.recipes : [];
-const defaultRecipeImage =
-  "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=900&q=80";
+const defaultRecipeImage = "images/greek-table.jpg";
 
 function getStoredFavorites() {
   try {
