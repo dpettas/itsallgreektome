@@ -6,6 +6,26 @@ A static food blog for mostly Greek recipes.
 
 Open `index.html` in a browser.
 
+## Add Recipes
+
+Add a new recipe object to `recipes.js`.
+
+Use this format:
+
+```js
+{
+  title: "Recipe Name",
+  category: "Category",
+  time: "45 min",
+  description: "One short sentence for the recipe card.",
+  tags: ["tag-one", "tag-two"],
+  ingredients: ["ingredient one", "ingredient two"],
+  image: "https://example.com/image.jpg",
+},
+```
+
+You can draft full recipes in `recipes/` using `recipes/recipe-template.md`.
+
 ## GitHub Pages
 
 The site is designed to run on GitHub Pages from the repository root.
