@@ -87,6 +87,18 @@ function Nav({ compact = false }) {
   );
 }
 
+function MobileNav({ items }) {
+  return h(
+    "nav",
+    { className: "mobile-nav", "aria-label": "Mobile navigation" },
+    items.map((item) =>
+      item.href
+        ? h("a", { href: item.href, key: item.label }, h("span", null, item.icon), h("strong", null, item.label))
+        : h("button", { type: "button", key: item.label, onClick: item.onClick }, h("span", null, item.icon), h("strong", null, item.label)),
+    ),
+  );
+}
+
 function HomePage({ createRecipe, favorites, recipes, toggleFavorite }) {
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState("all");
@@ -231,6 +243,20 @@ function HomePage({ createRecipe, favorites, recipes, toggleFavorite }) {
         recipes,
       }),
     h(Footer),
+    h(MobileNav, {
+      items: [
+        { href: "#recipes", icon: "R", label: "Recipes" },
+        { icon: "+", label: "Create", onClick: () => setIsCreatorOpen(true) },
+        {
+          icon: "S",
+          label: "Saved",
+          onClick: () => {
+            setShowFavorites(true);
+            window.location.hash = "recipes";
+          },
+        },
+      ],
+    }),
   );
 }
 
@@ -531,7 +557,7 @@ function RecipePage({ favorites, recipes, toggleFavorite }) {
   return h(
     React.Fragment,
     null,
-    h("header", { className: "page-header" }, h(Nav, { compact: true })),
+    h("header", { className: "page-header", id: "top" }, h(Nav, { compact: true })),
     h(
       "main",
       { className: "recipe-page" },
@@ -660,6 +686,13 @@ function RecipePage({ favorites, recipes, toggleFavorite }) {
       ),
     ),
     h(Footer),
+    h(MobileNav, {
+      items: [
+        { href: "index.html#recipes", icon: "R", label: "Recipes" },
+        { href: "#recipe-card", icon: "C", label: "Card" },
+        { icon: "S", label: isFavorite ? "Saved" : "Save", onClick: () => toggleFavorite(recipe.slug) },
+      ],
+    }),
   );
 }
 
