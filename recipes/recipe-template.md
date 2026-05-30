@@ -5,7 +5,12 @@ Use this as a draft before adding the recipe to `recipes.js`.
 ## Summary
 
 - Category:
-- Time:
+- Slug:
+- Published:
+- Prep time:
+- Cook time:
+- Total time:
+- Servings:
 - Tags:
 - Main ingredients:
 - Image URL:
@@ -26,3 +31,8 @@ Write one short sentence for the recipe card.
 2. Step two.
 3. Step three.
 
+## Recipe Details
+
+- Detail one.
+- Detail two.
+- Detail three.

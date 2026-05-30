@@ -20,8 +20,12 @@ function recipeMatches(recipe, query) {
     recipe.title,
     recipe.category,
     recipe.description,
+    recipe.prepTime || "",
+    recipe.cookTime || "",
+    recipe.servings || "",
     ...recipe.tags,
     ...recipe.ingredients,
+    ...(recipe.ingredientsList || []),
   ]
     .join(" ")
     .toLowerCase();
@@ -70,6 +74,9 @@ function renderRecipes() {
             <div class="recipe-tags" aria-label="Tags for ${recipe.title}">
               ${recipe.tags.map((tag) => `<span>${tag}</span>`).join("")}
             </div>
+            <a class="recipe-card-link" href="recipe.html?recipe=${recipe.slug}">
+              View full recipe
+            </a>
           </div>
         </article>
       `,
