@@ -433,6 +433,74 @@ function TextAreaField({ label, onChange, required = false, value }) {
   );
 }
 
+function gcd(a, b) {
+  return b ? gcd(b, a % b) : a;
+}
+
+function parseQuantity(value) {
+  if (!value) {
+    return null;
+  }
+
+  const mixedMatch = value.match(/^(\d+)\s+(\d+)\/(\d+)$/);
+  if (mixedMatch) {
+    const whole = Number(mixedMatch[1]);
+    const numerator = Number(mixedMatch[2]);
+    const denominator = Number(mixedMatch[3]);
+    return whole + numerator / denominator;
+  }
+
+  const fractionMatch = value.match(/^(\d+)\/(\d+)$/);
+  if (fractionMatch) {
+    return Number(fractionMatch[1]) / Number(fractionMatch[2]);
+  }
+
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+function formatQuantity(value) {
+  const roundedWhole = Math.round(value);
+  if (Math.abs(value - roundedWhole) < 0.001) {
+    return String(roundedWhole);
+  }
+
+  const whole = Math.floor(value);
+  const denominator = 8;
+  let numerator = Math.round((value - whole) * denominator);
+
+  if (numerator === denominator) {
+    return String(whole + 1);
+  }
+
+  const divisor = gcd(numerator, denominator);
+  numerator /= divisor;
+  const reducedDenominator = denominator / divisor;
+  const fraction = `${numerator}/${reducedDenominator}`;
+
+  return whole ? `${whole} ${fraction}` : fraction;
+}
+
+function scaleIngredient(item, scale) {
+  if (scale === 1) {
+    return item;
+  }
+
+  const match = item.match(/^((?:\d+\s+\d+\/\d+)|(?:\d+\/\d+)|(?:\d+(?:\.\d+)?))(.*)$/);
+
+  if (!match) {
+    return item;
+  }
+
+  const quantity = parseQuantity(match[1]);
+
+  if (quantity === null) {
+    return item;
+  }
+
+  return `${formatQuantity(quantity * scale)}${match[2]}`;
+}
+
 function RecipePage({ favorites, recipes, toggleFavorite }) {
   const params = new URLSearchParams(window.location.search);
   const slug = params.get("recipe");
@@ -540,7 +608,7 @@ function RecipePage({ favorites, recipes, toggleFavorite }) {
           h(
             "div",
             { className: "cook-controls" },
-            h("span", null, "Scale"),
+            h("span", null, "Scale ingredients"),
             [1, 2, 3].map((value) => h("button", { key: value, type: "button", className: value === scale ? "active-scale" : "", onClick: () => setScale(value) }, `${value}x`)),
           ),
           h(
@@ -562,7 +630,16 @@ function RecipePage({ favorites, recipes, toggleFavorite }) {
                 "ul",
                 { className: "ingredient-list check-list" },
                 recipe.ingredientsList.map((item) =>
-                  h("li", { key: item, className: checkedIngredients.includes(item) ? "checked" : "" }, h("label", null, h("input", { type: "checkbox", checked: checkedIngredients.includes(item), onChange: () => toggleChecked(item, setCheckedIngredients) }), h("span", null, item))),
+                  h(
+                    "li",
+                    { key: item, className: checkedIngredients.includes(item) ? "checked" : "" },
+                    h(
+                      "label",
+                      null,
+                      h("input", { type: "checkbox", checked: checkedIngredients.includes(item), onChange: () => toggleChecked(item, setCheckedIngredients) }),
+                      h("span", null, scaleIngredient(item, scale)),
+                    ),
+                  ),
                 ),
               ),
             ),
