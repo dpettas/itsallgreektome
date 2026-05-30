@@ -197,6 +197,7 @@ function RecipePage({ favorites, toggleFavorite }) {
   const params = new URLSearchParams(window.location.search);
   const slug = params.get("recipe");
   const recipe = recipes.find((item) => item.slug === slug);
+  const relatedRecipes = recipes.filter((item) => item.slug !== slug).slice(0, 4);
   const [checkedIngredients, setCheckedIngredients] = useState([]);
   const [checkedSteps, setCheckedSteps] = useState([]);
   const [scale, setScale] = useState(1);
@@ -246,9 +247,41 @@ function RecipePage({ favorites, toggleFavorite }) {
               h("button", { className: "favorite-button", type: "button", "aria-pressed": isFavorite, onClick: () => toggleFavorite(recipe.slug) }, isFavorite ? "Saved recipe" : "Save recipe"),
             ),
           ),
-          h("img", { src: recipe.image, alt: recipe.title }),
+          h(
+            "div",
+            { className: "recipe-visual" },
+            h("img", { src: recipe.image, alt: recipe.title }),
+            h(
+              "div",
+              { className: "image-badge" },
+              h("span", null, recipe.totalTime),
+              h("strong", null, recipe.servings),
+            ),
+          ),
         ),
         h("section", { className: "recipe-story" }, recipe.story.map((item) => h("p", { key: item }, item))),
+        h(
+          "section",
+          { className: "recipe-thumbnail-section", "aria-labelledby": "more-recipes-title" },
+          h(
+            "div",
+            { className: "thumbnail-heading" },
+            h("p", { className: "section-kicker" }, "More Recipes"),
+            h("h2", { id: "more-recipes-title" }, "Keep browsing"),
+          ),
+          h(
+            "div",
+            { className: "thumbnail-strip" },
+            relatedRecipes.map((item) =>
+              h(
+                "a",
+                { className: "thumbnail-link", href: `recipe.html?recipe=${item.slug}`, key: item.slug },
+                h("img", { src: item.image, alt: item.title, loading: "lazy" }),
+                h("span", null, item.title),
+              ),
+            ),
+          ),
+        ),
         h(
           "section",
           { className: "recipe-details" },
