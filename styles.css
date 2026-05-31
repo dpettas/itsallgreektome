@@ -1,18 +1,18 @@
 :root {
   color-scheme: light;
-  --ink: #1f2420;
-  --muted: #667066;
-  --paper: #f7f3ec;
-  --surface: #ffffff;
-  --surface-soft: #fbf8f2;
-  --line: #e5ddd1;
-  --olive: #526b3e;
-  --tomato: #bd4f38;
-  --sea: #256f68;
-  --honey: #d99a2b;
-  --shadow: 0 18px 48px rgba(31, 36, 32, 0.12);
-  --shadow-strong: 0 28px 78px rgba(31, 36, 32, 0.18);
-  --radius: 12px;
+  --ink: #2b2118;
+  --muted: #746858;
+  --paper: #f3eadb;
+  --surface: #fffaf0;
+  --surface-soft: #f8efdf;
+  --line: #ddcbb3;
+  --olive: #5f7040;
+  --tomato: #aa4b32;
+  --sea: #315f59;
+  --honey: #bf7b22;
+  --shadow: 0 16px 38px rgba(79, 55, 31, 0.12);
+  --shadow-strong: 0 24px 70px rgba(79, 55, 31, 0.18);
+  --radius: 10px;
 }
 
 * {
@@ -27,12 +27,13 @@ html {
 body {
   margin: 0;
   background:
-    radial-gradient(circle at top left, rgba(217, 154, 43, 0.1), transparent 30rem),
-    linear-gradient(180deg, #faf7f1 0%, var(--paper) 42%, #f2ede5 100%);
+    linear-gradient(rgba(99, 76, 46, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at top left, rgba(191, 123, 34, 0.1), transparent 28rem),
+    linear-gradient(180deg, #fbf4e7 0%, var(--paper) 45%, #eadcc7 100%);
+  background-size: 100% 32px, auto, auto;
   color: var(--ink);
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+    "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
   line-height: 1.5;
   overflow-x: hidden;
 }
@@ -50,9 +51,10 @@ a {
 .site-header {
   min-height: 92vh;
   background:
-    linear-gradient(90deg, rgba(16, 20, 17, 0.88), rgba(16, 20, 17, 0.42)),
+    linear-gradient(90deg, rgba(31, 24, 17, 0.88), rgba(31, 24, 17, 0.46)),
     url("images/greek-table.jpg") center / cover;
   color: #fffdf8;
+  border-bottom: 10px solid #d8c09d;
 }
 
 .nav {
@@ -69,6 +71,9 @@ a {
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 700;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
 
 .nav a:not(.brand) {
@@ -84,6 +89,7 @@ a {
 .brand {
   margin-right: auto;
   font-size: clamp(1.15rem, 2vw, 1.45rem);
+  font-family: Georgia, "Times New Roman", serif;
 }
 
 .hero {
@@ -107,6 +113,9 @@ a {
   font-weight: 800;
   letter-spacing: 0;
   text-transform: uppercase;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
 
 .hero h1 {
@@ -137,6 +146,9 @@ a {
   text-decoration: none;
   font-weight: 800;
   backdrop-filter: blur(10px);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
 
 .hero-button {
@@ -148,14 +160,18 @@ a {
   color: var(--ink);
   cursor: pointer;
   font: inherit;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
   font-weight: 900;
   padding: 0 18px;
   box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
 }
 
 .page-header {
-  background: #2f3f2c;
+  background: #443421;
   color: #fffdf8;
+  border-bottom: 6px solid #d8c09d;
 }
 
 main {
@@ -168,7 +184,7 @@ main {
   grid-template-columns: minmax(0, 0.95fr) minmax(280px, 1fr);
   gap: 32px;
   padding: 56px 0 34px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 2px solid var(--line);
 }
 
 .intro h2,
@@ -189,6 +205,7 @@ main {
 
 .recipe-section {
   padding: 46px 0 72px;
+  position: relative;
 }
 
 .section-heading {
@@ -204,6 +221,9 @@ main {
   color: var(--muted);
   font-size: 0.9rem;
   font-weight: 800;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
 
 .search-label input {
@@ -214,6 +234,9 @@ main {
   background: var(--surface);
   color: var(--ink);
   font: inherit;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
   padding: 0 16px;
   outline: none;
   box-shadow: 0 8px 24px rgba(46, 35, 20, 0.06);
@@ -243,6 +266,9 @@ main {
   color: var(--ink);
   cursor: pointer;
   font: inherit;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
   font-size: 0.9rem;
   font-weight: 800;
   padding: 0 14px;
@@ -277,6 +303,9 @@ main {
   gap: 8px;
   color: var(--ink);
   font-weight: 900;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
 
 .toggle-control input,
@@ -295,6 +324,9 @@ main {
   color: var(--ink);
   cursor: pointer;
   font: inherit;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
   font-size: 0.9rem;
   font-weight: 900;
   padding: 0 12px;
@@ -340,14 +372,25 @@ main {
 }
 
 .recipe-card {
+  position: relative;
   overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--surface);
+  border: 1px solid #d6c2a7;
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(170, 75, 50, 0.08) 0 6px, transparent 6px),
+    var(--surface);
   box-shadow: var(--shadow);
   transition:
     transform 180ms ease,
     box-shadow 180ms ease;
+}
+
+.recipe-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.52);
 }
 
 .recipe-card:hover {
@@ -369,7 +412,7 @@ main {
 }
 
 .recipe-body {
-  padding: 20px;
+  padding: 22px 20px 20px 26px;
 }
 
 .recipe-meta {
@@ -381,6 +424,9 @@ main {
   font-size: 0.84rem;
   font-weight: 900;
   text-transform: uppercase;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
 
 .recipe-card h3 {
@@ -410,6 +456,9 @@ main {
   font-size: 0.78rem;
   font-weight: 800;
   padding: 5px 9px;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
 
 .recipe-card-link {
@@ -424,6 +473,9 @@ main {
   font-weight: 900;
   padding: 0 14px;
   text-decoration: none;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
 
 .card-actions,
@@ -448,8 +500,13 @@ main {
   gap: clamp(32px, 6vw, 76px);
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 42px;
-  border-bottom: 1px solid var(--line);
+  padding: clamp(24px, 4vw, 44px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(170, 75, 50, 0.08) 0 8px, transparent 8px),
+    var(--surface);
+  box-shadow: var(--shadow);
 }
 
 .recipe-post-copy,
@@ -480,6 +537,9 @@ main {
   margin: 18px 0 0;
   color: var(--tomato);
   font-weight: 900;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
 
 .skip-link {
@@ -500,7 +560,8 @@ main {
 .recipe-visual img {
   width: 100%;
   aspect-ratio: 4 / 5;
-  border-radius: 16px;
+  border-radius: 4px;
+  border: 8px solid #fffaf0;
   object-fit: cover;
   box-shadow: var(--shadow);
   transition:
@@ -520,8 +581,8 @@ main {
   display: grid;
   gap: 2px;
   min-width: 142px;
-  border-radius: var(--radius);
-  background: rgba(255, 250, 242, 0.94);
+  border-radius: 4px;
+  background: rgba(255, 250, 242, 0.96);
   box-shadow: 0 12px 34px rgba(36, 31, 26, 0.2);
   color: var(--ink);
   padding: 12px 14px;
@@ -540,7 +601,10 @@ main {
 
 .recipe-story {
   max-width: 760px;
-  padding: 36px 0 14px;
+  margin: 30px auto 10px;
+  padding: 28px 32px;
+  border-left: 4px solid #d8c09d;
+  background: rgba(255, 250, 240, 0.68);
 }
 
 .recipe-thumbnail-section {
@@ -550,8 +614,8 @@ main {
   align-items: start;
   margin: 10px 0 36px;
   padding: 28px 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  border-top: 2px solid var(--line);
+  border-bottom: 2px solid var(--line);
 }
 
 .thumbnail-heading h2 {
@@ -629,10 +693,12 @@ main {
 
 .full-recipe-card {
   border: 1px solid var(--line);
-  border-radius: 16px;
-  background: var(--surface);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(170, 75, 50, 0.08) 0 8px, transparent 8px),
+    repeating-linear-gradient(180deg, var(--surface) 0 31px, rgba(221, 203, 179, 0.5) 32px);
   box-shadow: var(--shadow);
-  padding: clamp(20px, 4vw, 34px);
+  padding: clamp(22px, 4vw, 38px) clamp(20px, 4vw, 42px);
 }
 
 .full-recipe-heading {
@@ -668,7 +734,7 @@ main {
 
 .recipe-stats div {
   min-height: 86px;
-  background: var(--surface-soft);
+  background: rgba(248, 239, 223, 0.86);
   padding: 14px;
 }
 
@@ -696,6 +762,8 @@ main {
   font-family: Georgia, "Times New Roman", serif;
   font-size: 1.8rem;
   letter-spacing: 0;
+  border-bottom: 2px solid #d8c09d;
+  padding-bottom: 8px;
 }
 
 .ingredient-list,
@@ -749,7 +817,7 @@ main {
   max-height: min(88vh, 980px);
   overflow: auto;
   border-radius: 16px;
-  background: var(--paper);
+  background: var(--surface);
   box-shadow: 0 30px 90px rgba(20, 16, 10, 0.34);
   padding: clamp(20px, 4vw, 34px);
 }
@@ -800,6 +868,9 @@ main {
   color: var(--muted);
   font-size: 0.88rem;
   font-weight: 900;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
 
 .form-field input,
@@ -881,6 +952,9 @@ main {
   margin: 0 auto;
   padding: 28px 0 38px;
   font-size: 0.95rem;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
 
 .footer p {
@@ -908,8 +982,8 @@ main {
     z-index: 15;
     width: 100%;
     padding: 12px 16px;
-    background: rgba(38, 58, 38, 0.92);
-    box-shadow: 0 10px 28px rgba(15, 24, 15, 0.16);
+    background: rgba(68, 52, 33, 0.94);
+    box-shadow: 0 10px 28px rgba(48, 33, 18, 0.18);
     backdrop-filter: blur(10px);
   }
 
@@ -1043,6 +1117,23 @@ main {
     font-size: 1rem;
   }
 
+  .intro h2,
+  .section-heading h2,
+  .recipe-details h2,
+  .full-recipe-heading h2 {
+    font-size: clamp(1.9rem, 9vw, 2.45rem);
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .intro p:last-child,
+  .recipe-card p,
+  .recipe-details li,
+  .ingredient-list,
+  .instruction-list {
+    overflow-wrap: anywhere;
+  }
+
   .hero-link,
   .hero-button,
   .create-button,
@@ -1067,10 +1158,12 @@ main {
 
   .recipe-controls {
     margin-top: 20px;
-    border: 1px solid rgba(229, 221, 209, 0.86);
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.82);
-    box-shadow: 0 18px 42px rgba(31, 36, 32, 0.1);
+    border: 1px solid #d8c09d;
+    border-radius: 8px;
+    background:
+      linear-gradient(90deg, rgba(170, 75, 50, 0.08) 0 5px, transparent 5px),
+      rgba(255, 250, 240, 0.9);
+    box-shadow: 0 14px 34px rgba(79, 55, 31, 0.12);
     padding: 14px;
   }
 
@@ -1085,7 +1178,7 @@ main {
   .interactive-row .clear-button {
     width: 100%;
     margin: 0;
-    border-radius: 12px;
+    border-radius: 8px;
   }
 
   .toggle-control {
@@ -1093,7 +1186,7 @@ main {
     justify-content: space-between;
     min-height: 46px;
     border: 1px solid var(--line);
-    border-radius: 12px;
+    border-radius: 8px;
     background: var(--surface);
     padding: 0 12px;
   }
@@ -1129,7 +1222,7 @@ main {
   .tag-button {
     flex: 0 0 auto;
     min-height: 42px;
-    border-radius: 12px;
+    border-radius: 8px;
     background: #fffdf8;
     box-shadow: 0 8px 18px rgba(31, 36, 32, 0.07);
   }
@@ -1141,6 +1234,27 @@ main {
   .image-badge {
     position: static;
     margin-top: 12px;
+  }
+
+  .recipe-post-hero,
+  .full-recipe-card {
+    border-radius: 6px;
+    padding: 18px;
+    overflow: hidden;
+  }
+
+  .recipe-post-copy h1,
+  .recipe-not-found h1 {
+    font-size: clamp(2.4rem, 12vw, 3.25rem);
+  }
+
+  .recipe-post-copy p:not(.section-kicker),
+  .recipe-story p {
+    word-break: break-word;
+  }
+
+  .recipe-post-copy {
+    padding-right: 16px;
   }
 
   .thumbnail-strip {
