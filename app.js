@@ -1,6 +1,7 @@
 const { createElement: h, useEffect, useMemo, useState } = React;
 const baseRecipes = Array.isArray(window.recipes) ? window.recipes : [];
 const defaultRecipeImage = "images/greek-table.jpg";
+const publishedRecipesPath = "data/published-recipes.json";
 
 function getStoredFavorites() {
   try {
@@ -10,12 +11,27 @@ function getStoredFavorites() {
   }
 }
 
-function getStoredRecipes() {
+function getStoredPublishConfig() {
   try {
-    return JSON.parse(localStorage.getItem("createdRecipes") || "[]");
+    return JSON.parse(
+      localStorage.getItem("githubPublishConfig") ||
+        JSON.stringify({
+          owner: "dpettas",
+          repo: "itsallgreektome",
+          branch: "main",
+        }),
+    );
   } catch {
-    return [];
+    return {
+      owner: "dpettas",
+      repo: "itsallgreektome",
+      branch: "main",
+    };
   }
+}
+
+function getSessionToken() {
+  return sessionStorage.getItem("githubPublishToken") || "";
 }
 
 function slugify(value) {
@@ -40,23 +56,172 @@ function splitTags(value) {
     .filter(Boolean);
 }
 
+function toBase64(value) {
+  return btoa(unescape(encodeURIComponent(value)));
+}
+
+function fromBase64(value) {
+  return decodeURIComponent(escape(atob(value.replace(/\n/g, ""))));
+}
+
+function dataUrlToBase64(dataUrl) {
+  const parts = dataUrl.split(",");
+  return parts.length > 1 ? parts[1] : "";
+}
+
+function dataUrlToExtension(dataUrl) {
+  const match = dataUrl.match(/^data:image\/([a-zA-Z0-9+.-]+);base64,/);
+  if (!match) {
+    return "jpg";
+  }
+
+  const type = match[1].toLowerCase();
+  if (type === "jpeg") {
+    return "jpg";
+  }
+
+  return type;
+}
+
+async function githubJsonRequest(path, { body, method = "GET", token }) {
+  const response = await fetch(`https://api.github.com${path}`, {
+    method,
+    headers: {
+      Accept: "application/vnd.github+json",
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  if (!response.ok) {
+    let errorMessage = `GitHub request failed: ${response.status}`;
+
+    try {
+      const errorJson = await response.json();
+      errorMessage = errorJson.message || errorMessage;
+    } catch {
+      const errorText = await response.text();
+      errorMessage = errorText || errorMessage;
+    }
+
+    throw new Error(errorMessage);
+  }
+
+  return response.json();
+}
+
+async function loadPublishedRecipes() {
+  const response = await fetch(`${publishedRecipesPath}?t=${Date.now()}`, {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Could not load published recipes: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+async function publishRecipeToGithub({ publishConfig, recipe, token }) {
+  const owner = publishConfig.owner.trim();
+  const repo = publishConfig.repo.trim();
+  const branch = publishConfig.branch.trim() || "main";
+
+  if (!owner || !repo) {
+    throw new Error("Owner and repo are required.");
+  }
+
+  let publishedRecipe = { ...recipe };
+
+  if (recipe.image.startsWith("data:image/")) {
+    const extension = dataUrlToExtension(recipe.image);
+    const imagePath = `images/user/${recipe.slug}-${Date.now()}.${extension}`;
+    await githubJsonRequest(`/repos/${owner}/${repo}/contents/${imagePath}`, {
+      method: "PUT",
+      token,
+      body: {
+        message: `Add image for ${recipe.title}`,
+        branch,
+        content: dataUrlToBase64(recipe.image),
+      },
+    });
+    publishedRecipe = {
+      ...publishedRecipe,
+      image: imagePath,
+    };
+  }
+
+  let file = null;
+  let currentRecipes = [];
+
+  try {
+    file = await githubJsonRequest(
+      `/repos/${owner}/${repo}/contents/${publishedRecipesPath}?ref=${encodeURIComponent(branch)}`,
+      { token },
+    );
+    currentRecipes = JSON.parse(fromBase64(file.content));
+  } catch (error) {
+    if (!(error instanceof Error) || !error.message.includes("Not Found")) {
+      throw error;
+    }
+  }
+
+  const nextRecipes = [publishedRecipe, ...currentRecipes];
+
+  await githubJsonRequest(`/repos/${owner}/${repo}/contents/${publishedRecipesPath}`, {
+    method: "PUT",
+    token,
+    body: {
+      message: `Publish recipe ${recipe.title}`,
+      branch,
+      ...(file ? { sha: file.sha } : {}),
+      content: toBase64(JSON.stringify(nextRecipes, null, 2) + "\n"),
+    },
+  });
+
+  return publishedRecipe;
+}
+
 function App() {
   const page = document.querySelector("#app").dataset.page;
   const [favorites, setFavorites] = useState(getStoredFavorites);
-  const [createdRecipes, setCreatedRecipes] = useState(getStoredRecipes);
-  const recipes = useMemo(() => [...createdRecipes, ...baseRecipes], [createdRecipes]);
+  const [publishConfig, setPublishConfig] = useState(getStoredPublishConfig);
+  const [githubToken, setGithubToken] = useState(getSessionToken);
+  const [publishedRecipes, setPublishedRecipes] = useState([]);
+  const recipes = useMemo(() => [...publishedRecipes, ...baseRecipes], [publishedRecipes]);
 
   useEffect(() => {
     localStorage.setItem("favoriteRecipes", JSON.stringify(favorites));
   }, [favorites]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem("createdRecipes", JSON.stringify(createdRecipes));
-    } catch {
-      window.alert("That image is too large to save in this browser. Try a smaller image.");
-    }
-  }, [createdRecipes]);
+    localStorage.setItem("githubPublishConfig", JSON.stringify(publishConfig));
+  }, [publishConfig]);
+
+  useEffect(() => {
+    sessionStorage.setItem("githubPublishToken", githubToken);
+  }, [githubToken]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    loadPublishedRecipes()
+      .then((items) => {
+        if (!cancelled) {
+          setPublishedRecipes(Array.isArray(items) ? items : []);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setPublishedRecipes([]);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   function toggleFavorite(slug) {
     setFavorites((current) =>
@@ -66,15 +231,24 @@ function App() {
     );
   }
 
-  function createRecipe(recipe) {
-    setCreatedRecipes((current) => [recipe, ...current]);
+  function handlePublishedRecipe(recipe) {
+    setPublishedRecipes((current) => [recipe, ...current]);
   }
 
   if (page === "recipe") {
     return h(RecipePage, { favorites, recipes, toggleFavorite });
   }
 
-  return h(HomePage, { createRecipe, favorites, recipes, toggleFavorite });
+  return h(HomePage, {
+    favorites,
+    githubToken,
+    onPublishRecipe: handlePublishedRecipe,
+    publishConfig,
+    recipes,
+    setGithubToken,
+    setPublishConfig,
+    toggleFavorite,
+  });
 }
 
 function Nav({ compact = false }) {
@@ -99,7 +273,16 @@ function MobileNav({ items }) {
   );
 }
 
-function HomePage({ createRecipe, favorites, recipes, toggleFavorite }) {
+function HomePage({
+  favorites,
+  githubToken,
+  onPublishRecipe,
+  publishConfig,
+  recipes,
+  setGithubToken,
+  setPublishConfig,
+  toggleFavorite,
+}) {
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState("all");
   const [showFavorites, setShowFavorites] = useState(false);
@@ -241,15 +424,19 @@ function HomePage({ createRecipe, favorites, recipes, toggleFavorite }) {
     isCreatorOpen &&
       h(RecipeCreator, {
         onClose: () => setIsCreatorOpen(false),
-        onCreate: (recipe) => {
-          createRecipe(recipe);
+        onPublish: (recipe) => {
+          onPublishRecipe(recipe);
           setIsCreatorOpen(false);
           setQuery("");
           setActiveTag("all");
           setShowFavorites(false);
           window.location.hash = "recipes";
         },
+        githubToken,
+        publishConfig,
         recipes,
+        setGithubToken,
+        setPublishConfig,
       }),
     h(Footer),
     h(MobileNav, {
@@ -293,7 +480,15 @@ function RecipeCard({ recipe, favorites, toggleFavorite }) {
   );
 }
 
-function RecipeCreator({ onClose, onCreate, recipes }) {
+function RecipeCreator({
+  githubToken,
+  onClose,
+  onPublish,
+  publishConfig,
+  recipes,
+  setGithubToken,
+  setPublishConfig,
+}) {
   const [form, setForm] = useState({
     title: "",
     category: "Family Recipe",
@@ -308,6 +503,8 @@ function RecipeCreator({ onClose, onCreate, recipes }) {
     details: "",
     image: "",
   });
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [publishError, setPublishError] = useState("");
 
   function updateField(field, value) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -339,10 +536,17 @@ function RecipeCreator({ onClose, onCreate, recipes }) {
     reader.readAsDataURL(file);
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
+    setPublishError("");
 
     const title = form.title.trim();
+
+    if (!title) {
+      setPublishError("Add a recipe title.");
+      return;
+    }
+
     const slugBase = slugify(title || "new-recipe");
     const existingSlugs = new Set(recipes.map((recipe) => recipe.slug));
     let slug = slugBase;
@@ -359,7 +563,17 @@ function RecipeCreator({ onClose, onCreate, recipes }) {
     const prepTime = form.prepTime.trim();
     const cookTime = form.cookTime.trim();
 
-    onCreate({
+    if (!ingredientsList.length) {
+      setPublishError("Add at least one ingredient.");
+      return;
+    }
+
+    if (!instructions.length) {
+      setPublishError("Add at least one instruction.");
+      return;
+    }
+
+    const recipe = {
       title,
       slug,
       category: form.category.trim() || "Recipe",
@@ -386,7 +600,29 @@ function RecipeCreator({ onClose, onCreate, recipes }) {
         ? splitLines(form.details)
         : ["Adjust seasoning to taste.", "Serve warm or at room temperature."],
       image: form.image || defaultRecipeImage,
-    });
+    };
+
+    if (!githubToken.trim()) {
+      setPublishError("Enter a GitHub token with repository contents write access.");
+      return;
+    }
+
+    setIsPublishing(true);
+
+    try {
+      const publishedRecipe = await publishRecipeToGithub({
+        publishConfig,
+        recipe,
+        token: githubToken.trim(),
+      });
+      onPublish(publishedRecipe);
+    } catch (error) {
+      setPublishError(
+        error instanceof Error ? error.message : "Could not publish recipe to GitHub.",
+      );
+    } finally {
+      setIsPublishing(false);
+    }
   }
 
   return h(
@@ -401,12 +637,50 @@ function RecipeCreator({ onClose, onCreate, recipes }) {
         h("div", null, h("p", { className: "section-kicker" }, "New Recipe"), h("h2", { id: "create-recipe-title" }, "Create recipe")),
         h("button", { className: "icon-close", type: "button", onClick: onClose, "aria-label": "Close" }, "x"),
       ),
-      h(
-        "form",
-        { className: "recipe-form", onSubmit: handleSubmit },
         h(
-          "div",
-          { className: "form-grid" },
+          "form",
+          { className: "recipe-form", onSubmit: handleSubmit },
+          h(
+            "section",
+            { className: "publish-panel" },
+            h("p", { className: "section-kicker" }, "GitHub Publish"),
+            h(
+              "div",
+              { className: "form-grid" },
+              h(FormField, {
+                label: "Owner",
+                value: publishConfig.owner,
+                onChange: (value) =>
+                  setPublishConfig((current) => ({ ...current, owner: value })),
+              }),
+              h(FormField, {
+                label: "Repo",
+                value: publishConfig.repo,
+                onChange: (value) =>
+                  setPublishConfig((current) => ({ ...current, repo: value })),
+              }),
+              h(FormField, {
+                label: "Branch",
+                value: publishConfig.branch,
+                onChange: (value) =>
+                  setPublishConfig((current) => ({ ...current, branch: value })),
+              }),
+              h(FormField, {
+                label: "GitHub token",
+                type: "password",
+                value: githubToken,
+                onChange: (value) => setGithubToken(value),
+              }),
+            ),
+            h(
+              "p",
+              { className: "publish-note" },
+              "Use a token with repository contents read/write access. The token is kept only in this browser session.",
+            ),
+          ),
+          h(
+            "div",
+            { className: "form-grid" },
           h(FormField, { label: "Title", value: form.title, required: true, onChange: (value) => updateField("title", value) }),
           h(FormField, { label: "Category", value: form.category, onChange: (value) => updateField("category", value) }),
           h(FormField, { label: "Prep time", value: form.prepTime, onChange: (value) => updateField("prepTime", value) }),
@@ -434,20 +708,26 @@ function RecipeCreator({ onClose, onCreate, recipes }) {
           "div",
           { className: "modal-actions" },
           h("button", { className: "clear-button", type: "button", onClick: onClose }, "Cancel"),
-          h("button", { className: "create-button", type: "submit" }, "Add recipe"),
+          h(
+            "button",
+            { className: "create-button", disabled: isPublishing, type: "submit" },
+            isPublishing ? "Publishing..." : "Publish recipe",
+          ),
         ),
+        publishError && h("p", { className: "publish-error" }, publishError),
       ),
     ),
   );
 }
 
-function FormField({ label, onChange, required = false, value }) {
+function FormField({ label, onChange, required = false, type = "text", value }) {
   return h(
     "label",
     { className: "form-field" },
     h("span", null, label),
     h("input", {
       required,
+      type,
       value,
       onChange: (event) => onChange(event.target.value),
     }),

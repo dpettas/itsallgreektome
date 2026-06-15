@@ -12,8 +12,19 @@ The site uses React from a CDN and does not need a build step.
 
 Add a new recipe object to `recipes.js`.
 
-You can also use the site UI's `Create recipe` button. Recipes created from
-the UI, including uploaded thumbnails, are saved in that browser with
+You can also use the site UI's `Create recipe` button to publish a recipe
+directly into this GitHub repository.
+
+The publish form writes:
+- recipe data to `data/published-recipes.json`
+- uploaded thumbnails to `images/user/`
+
+Requirements for UI publishing:
+- a GitHub token with repository `Contents` read and write access
+- the correct `owner`, `repo`, and `branch` in the modal
+
+The token is stored only in the current browser session with `sessionStorage`.
+The owner/repo/branch fields are stored locally in the browser with
 `localStorage`.
 
 Use this format:
