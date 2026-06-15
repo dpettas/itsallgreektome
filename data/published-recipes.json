@@ -1,0 +1,46 @@
+[
+  {
+    "title": "Tiganopsomo",
+    "slug": "tiganopsomo",
+    "category": "Breakfast",
+    "time": "45 min",
+    "published": "June 14, 2026",
+    "prepTime": "15 minutes",
+    "cookTime": "30 minutes",
+    "totalTime": "45 minutes",
+    "servings": "4 servings",
+    "description": "Tiganopsomo is a traditional Greek fried bread, crisp and golden on the outside with a soft, warm center. Often filled with salty feta cheese, it balances rich, savory flavor with a simple homemade dough.",
+    "tags": ["bread", "feta", "fried", "traditional"],
+    "ingredients": ["flour", "yeast", "feta", "olive oil"],
+    "image": "images/greek-table.jpg",
+    "story": [
+      "In a small mountain village in Greece, the smell of warm dough and sizzling olive oil drifted through the narrow stone streets every Sunday morning.",
+      "Yiayia Eleni always woke before the sun. She would tie her apron, dust the wooden table with flour, and begin making tiganopsomo for the family table."
+    ],
+    "detailsTitle": "What makes it work",
+    "details": [
+      "Use warm water, not hot water, so the yeast can work gently.",
+      "Seal the feta inside the dough well so it melts without leaking into the pan.",
+      "Fry over medium heat so the outside turns golden while the inside cooks through."
+    ],
+    "ingredientsList": [
+      "500 g all-purpose flour",
+      "1 packet dry yeast",
+      "1 teaspoon sugar",
+      "1 teaspoon salt",
+      "300 ml warm water",
+      "2 tablespoons olive oil",
+      "200 g feta cheese, crumbled",
+      "Oil for frying"
+    ],
+    "instructions": [
+      "Mix the flour, yeast, sugar, and salt in a large bowl.",
+      "Add the warm water and olive oil, then knead until the dough is soft and elastic.",
+      "Cover and let the dough rise for about 1 hour.",
+      "Divide the dough into 6 pieces.",
+      "Flatten each piece, add feta in the center, seal it closed, and press gently into a flat round.",
+      "Fry over medium heat in a little oil for 2 to 3 minutes per side, until golden.",
+      "Drain on paper towels and serve warm with honey or oregano."
+    ]
+  }
+]
